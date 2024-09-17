@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Management App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #8a9396 3px solid;
+        }
+        header a {
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }
+        ul {
+            padding: 0;
+            list-style: none;
+        }
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background: #8a9396; /* Soft blue color */
+        }
+        .tabs a {
+            padding: 14px 20px;
+            display: block;
+            color: #fff;
+            text-decoration: none;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            padding: 10px 15px;
+            background: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background: #555;
+        }
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f4f4f4;
+            margin-bottom: 5px;
+            border: 1px solid #ddd;
+        }
+        .list-item button {
+            background: #ff4d4d;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .list-item button:hover {
+            background: #ff1a1a;
+        }
+        .list-item .minus-button {
+            background: #525252;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .list-item .minus-button:hover {
+            background: #525252;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 id="market-title">Market Management App</h1>
+        </div>
+    </header>
+    <div class="tabs">
+        <a href="#products" class="tab-link">Products</a>
+        <a href="#purchases" class="tab-link">Purchases</a>
+        <a href="#staff" class="tab-link">Staff</a>
+        <a href="#settings" class="tab-link">Settings</a>
+    </div>
+    <div class="container">
+        <div id="products" class="tab-content">
+            <h2>Products</h2>
+            <div class="form-group">
+                <label for="product-name">Product Name</label>
+                <input type="text" id="product-name">
+            </div>
+            <div class="form-group">
+                <label for="product-quantity">Quantity</label>
+                <input type="number" id="product-quantity">
+            </div>
+            <div class="form-group">
+                <button onclick="addProduct()">Add Product</button>
+            </div>
+            <div id="product-list"></div>
+        </div>
+        <div id="purchases" class="tab-content">
+            <h2>Purchases</h2>
+            <div class="form-group">
+                <label for="purchase-name">Product Name</label>
+                <input type="text" id="purchase-name">
+            </div>
+            <div class="form-group">
+                <label for="purchase-quantity">Quantity</label>
+                <input type="number" id="purchase-quantity">
+            </div>
+            <div class="form-group">
+                <button onclick="addPurchase()">Add Purchase</button>
+            </div>
+            <div id="purchase-list"></div>
+        </div>
+        <div id="staff" class="tab-content">
+            <h2>Staff</h2>
+            <div class="form-group">
+                <label for="staff-name">Employee Name</label>
+                <input type="text" id="staff-name">
+            </div>
+            <div class="form-group">
+                <label for="staff-salary">Salary</label>
+                <input type="number" id="staff-salary">
+            </div>
+            <div class="form-group">
+                <label for="salary-currency">Currency</label>
+                <select id="salary-currency">
+                    <option value="SYP">Syrian Pound</option>
+                    <option value="USD">Dollar</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button onclick="addStaff()">Add Employee</button>
+            </div>
+            <div id="staff-list"></div>
+        </div>
+        <div id="settings" class="tab-content">
+            <h2>Settings</h2>
+            <div class="form-group">
+                <label for="market-name">Market Name</label>
+                <input type="text" id="market-name">
+            </div>
+            <div class="form-group">
+                <button onclick="updateMarketName()">Update Market Name</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.tab-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                document.querySelector(this.getAttribute('href')).classList.add('active');
+            });
+        });
+
+        function addProduct() {
+            const name = document.getElementById('product-name').value;
+            let quantity = document.getElementById('product-quantity').value;
+            const productList = document.getElementById('product-list');
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            item.innerHTML = `
+                ${name}  <span class="quantity">${quantity}</span>
+                <button class="minus-button" onclick="subtractProduct(this)">-</button>
+                <button onclick="removeItem(this)">X</button>
+            `;
+            productList.appendChild(item);
+        }
+
+        function subtractProduct(button) {
+            const quantityElement = button.parentElement.querySelector('.quantity');
+            let quantity = parseInt(quantityElement.textContent);
+            if (quantity > 0) {
+                quantity -= 1;
+                quantityElement.textContent = quantity;
+            }
+        }
+
+        function addPurchase() {
+            const name = document.getElementById('purchase-name').value;
+            const quantity = document.getElementById('purchase-quantity').value;
+            const purchaseList = document.getElementById('purchase-list');
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            item.innerHTML = `${name} - ${quantity} <button onclick="removeItem(this)">X</button>`;
+            purchaseList.appendChild(item);
+        }
+
+        function addStaff() {
+            const name = document.getElementById('staff-name').value;
+            const salary = document.getElementById('staff-salary').value;
+            const currency = document.getElementById('salary-currency').value;
+            const staffList = document.getElementById('staff-list');
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            item.innerHTML = `${name} - ${salary} ${currency} <button onclick="removeItem(this)">X</button>`;
+            staffList.appendChild(item);
+        }
+
+        function removeItem(button) {
+            button.parentElement.remove();
+        }
+
+        function updateMarketName() {
+            const marketName = document.getElementById('market-name').value;
+            document.getElementById('market-title').textContent = marketName;
+        }
+    </script>
+</body>
+</html>
